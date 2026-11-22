@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#e6efdf">
+<title>袋鼠撑杆跳</title>
+<style>
+  * { box-sizing: border-box }
+  html, body, main { width: 100%; height: 100%; margin: 0; overflow: hidden }
+  body { background: #e6efdf }
+  #field { display: block; width: 100%; height: 100% }
+  button { position: fixed; right: max(18px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom)); display: grid; place-items: center; width: 43px; height: 43px; padding: 0; border: 1.5px solid #284b49; border-radius: 50%; color: #284b49; background: #fff4d6; box-shadow: 0 2px 0 #284b4940; cursor: pointer }
+  button:hover { background: #fffaf0 }
+  button:focus-visible { outline: 3px solid #253f43; outline-offset: 3px }
+  button svg { width: 17px; height: 17px; fill: currentColor }
+  button[hidden], button[data-paused="true"] .pause, button[data-paused="false"] .play { display: none }
+</style>
+</head>
+<body>
+<main>
+<svg id="field" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 760" role="img" aria-labelledby="title desc">
+  <title id="title">袋鼠撑杆跳</title>
+  <desc id="desc">一只穿着七号绿色背心的红袋鼠沿红土跑道助跑。它把长杆插进插斗，随着弯杆回弹翻身升空，松手越过横杆，落在蓝绿色软垫上。</desc>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#c2ded6"/><stop offset=".67" stop-color="#edf0d8"/><stop offset="1" stop-color="#ffe7bb"/></linearGradient>
+    <linearGradient id="track" x2=".16" y2="1"><stop stop-color="#d68766"/><stop offset="1" stop-color="#bd6c58"/></linearGradient>
+    <linearGradient id="pad" x2="1" y2=".25"><stop stop-color="#317878"/><stop offset="1" stop-color="#265e67"/></linearGradient>
+    <pattern id="seats" width="66" height="17" patternUnits="userSpaceOnUse">
+      <path d="M2 6h17l-2 5H4Zm22 0h17l-1 5H26Zm22 0h17l-2 5H48Z" fill="#809e99"/>
+      <path d="M2 6h17m6 0h15m7 0h15" fill="none" stroke="#d4d9b9" stroke-width="2"/>
+    </pattern>
+    <pattern id="crowd" width="103" height="22" patternUnits="userSpaceOnUse">
+      <g fill="#466d6b"><circle cx="7" cy="7" r="2.5"/><path d="M2 15q0-7 5-7t5 7Z"/></g>
+      <g fill="#dd985e"><circle cx="22" cy="10" r="2.1"/><path d="M18 17q0-6 4-6t4 6Z"/></g>
+      <g fill="#749596"><circle cx="52" cy="6" r="2.4"/><path d="M47 14q0-7 5-7t5 7Z"/></g>
+      <g fill="#c98062"><circle cx="83" cy="9" r="2.6"/><path d="M78 17q0-7 5-7t5 7Z"/></g>
+    </pattern>
+    <pattern id="cinders" width="117" height="59" patternUnits="userSpaceOnUse" fill="#874f43">
+      <path d="m9 16 3-1 2 1-3 1Zm59 26 3-1 2 1-2 1Zm31-35 2 0 1 1h-3Z"/>
+      <path d="M31 37h5m48-12h3" stroke="#f5be92" stroke-width="1.4" stroke-linecap="round"/>
+    </pattern>
+    <pattern id="vent" width="7" height="5" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".9" fill="#a1c5ac"/></pattern>
+    <g id="cloud" fill="#fff7db"><path d="M0 0q10-9 28-8 8-13 25-11 17-24 41-18 19 4 26 21 14-5 29 5 18-2 33 8Z"/><path d="M24 6h87q-34 5-82 3Z" opacity=".74"/></g>
+    <g id="gum">
+      <path d="M0 0q4-48-5-76l-23-35 5-2 22 26-1-40 5 1 4 39 20-27 5 2L11-74Q6-45 9 0Z" fill="#798c79"/>
+      <path d="M-48-107q-10-12 2-20 5-12 19-10 9-7 21-1 11 1 12 13-2 14-14 16-25 10-40 2Z" fill="#849e84"/>
+      <path d="M-19-134q-8-12 5-21 3-9 17-9 16-6 24 4 14 2 14 13-3 13-19 14-26 8-41-1Z" fill="#97ad8b"/>
+      <path d="M9-115q-2-12 11-16 8-11 22-5 13 0 18 10 5 12-10 16-22 7-41-5Z" fill="#789881"/>
+      <path d="M-40-117q12 2 25-4m9-22q12 2 24-4m7 28q9 1 18-3" fill="none" stroke="#b4c29a" stroke-width="2.8" stroke-linecap="round"/>
+    </g>
+    <g id="standard">
+      <path d="M-16 0h31l6 5h-43Z" fill="#384f53"/>
+      <path d="M-4 0v-361q0-4 4-4t4 4V0Z" fill="#e4e2c7" stroke="#526768" stroke-width="2"/>
+      <path d="M0-359v353" stroke="#fff6d8" stroke-width="2"/>
+      <path d="M-5-343h13m-13 31h7m-7 31h7m-7 31h7m-7 31h7m-7 31h7m-7 31h7m-7 31h7m-7 31h7m-7 31h7" fill="none" stroke="#8c9d8e" stroke-width="2"/>
+      <rect x="-6.5" y="-349" width="13" height="10" rx="2" fill="#325963"/>
+      <path d="M0-345h13v-4" fill="none" stroke="#37545a" stroke-width="3.5" stroke-linejoin="round"/>
+    </g>
+    <g id="pennant"><path d="M0 0v-42" stroke="#718d80" stroke-width="2.1"/><path class="flag" d="M0-41q9-4 19 0t19 0l-9 8q-8 1-15-2T0-33Z" fill="currentColor"/></g>
+  </defs>
+
+  <!-- The athletics ground, seen side-on from the edge of the runway. -->
+  <rect x="-4000" y="-3500" width="9000" height="5000" fill="#c2ded6"/>
+  <rect x="-4000" y="-105" width="9000" height="575" fill="url(#sky)"/>
+  <circle cx="318" cy="143" r="75" fill="#fff3be" opacity=".52"/>
+  <circle cx="318" cy="143" r="61" fill="#fff4c6"/>
+  <g id="clouds"><use href="#cloud" transform="translate(73 214) scale(.90 .56)"/><use href="#cloud" transform="translate(585 98) scale(.83 .60)"/><use href="#cloud" transform="translate(1187 175) scale(1.04 .62)"/></g>
+  <path d="M-4000 391H-120q137-48 213-41c79 8 134-40 210-54 54-10 74-34 113-32 62 4 104 44 147 48 69 8 92 45 150 53 71 11 128-7 197-30 92-29 124-60 179-54 80 9 112 46 158 48 63 2 107 21 176 34 72 13 132-2 221-21h2956v162H-4000Z" fill="#b4cbb8"/>
+  <path d="M-4000 410H-80c98-15 169-44 241-48 76-4 118-37 177-38 63-1 122 28 179 38 67 12 143 7 204 27 60 7 107-29 171-38 58-9 93-31 134-26 73 9 119 45 191 47 103 4 153-23 240-8h3143v134H-4000Z" fill="#92b3a4"/>
+  <g><use href="#gum" transform="translate(39 467) scale(.83)"/><use href="#gum" transform="translate(102 460) scale(.62)"/><use href="#gum" transform="translate(614 451) scale(.55)"/><use href="#gum" transform="translate(1388 461) scale(.88)"/><use href="#gum" transform="translate(1312 460) scale(.59)"/></g>
+  <path d="M-4000 446h9000v131h-9000Z" fill="#99b397"/>
+  <g stroke-linejoin="round">
+    <path d="m127 455 27-49h425l24 49Zm552 0 25-48h551l31 48Z" fill="#b4c4af"/>
+    <path d="m127 455 27-49h425l24 49Zm552 0 25-48h551l31 48Z" fill="url(#seats)"/>
+    <path d="m135 445 18-34h425l18 34Zm550 0 19-34h549l24 34Z" fill="url(#crowd)"/>
+    <g fill="none" stroke="#798f83" stroke-width="3.4">
+      <path d="m166 409 8-61m105 61 5-62m119 62 3-61m134 61-4-61m177 64 7-50m146 50 3-50m157 50-2-50m180 50-4-51"/>
+    </g>
+    <path d="m130 343 454 1-16 9-414 1Z" fill="#577b78"/><path d="m130 342 443-5 11 7-454 2Z" fill="#e1ddba"/>
+    <path d="m682 355 573-3-17 9-537 4Z" fill="#62847b"/><path d="m682 354 553-8 20 6-573 5Z" fill="#e7e0b9"/>
+    <path d="M75 454h1269v11H75Z" fill="#5f8780"/><path d="M68 454h1285" stroke="#e3dbb7" stroke-width="3"/>
+  </g>
+  <g><use href="#pennant" x="171" y="343" color="#c57857"/><use href="#pennant" x="397" y="341" color="#598b7f"/><use href="#pennant" x="851" y="352" color="#cb945b"/><use href="#pennant" x="1190" y="349" color="#b87961"/></g>
+  <path d="M-4000 468h9000v42h-9000Z" fill="#c3cb96"/>
+  <path d="M-4000 485h9000v23h-9000Z" fill="#b1be85"/>
+  <path d="M-4000 505h9000v3200h-9000Z" fill="#bf735c"/>
+  <path d="M-4000 505h9000v357h-9000Z" fill="url(#track)"/>
+  <path d="M-4000 507h9000m-9000 30h9000" stroke="#f2c297" stroke-width="2"/>
+  <path d="M-4000 559h9000v86h-9000Z" fill="#da916e"/>
+  <path d="M-4000 560h9000m-9000 85h9000" stroke="#ffdeb1" stroke-width="3.3"/>
+  <path d="M-4000 717h9000" stroke="#edb690" stroke-width="3.5"/>
+  <rect x="-4000" y="506" width="9000" height="3000" fill="url(#cinders)" opacity=".38"/>
+  <g fill="#fff0c7" opacity=".93">
+    <path d="m83 646 17-8h20l-17 8Zm154 0 17-8h20l-17 8Zm154 0 17-8h20l-17 8Zm154 0 17-8h20l-17 8Zm154 0 17-8h20l-17 8Z"/>
+    <path d="m673 558 11-5h23l-11 5Zm81 0 11-5h23l-11 5Z"/>
+  </g>
+  <path d="m831 613 29-18h48l-27 18Z" fill="#edc6a1" stroke="#a26b55" stroke-width="2"/>
+  <path d="m843 608 21-12h34l-20 12Z" fill="#5d665b"/><path d="m853 607 13-7h23l-12 7Z" fill="#384f4c"/>
+  <ellipse cx="1134" cy="606" rx="220" ry="12" fill="#925f4f" opacity=".24"/>
+  <use href="#standard" transform="translate(1036 586)"/>
+  <!-- The mat has a sewn top, a vent and fabric handles. -->
+  <g stroke-linejoin="round">
+    <path d="m917 538 42-36h326l55 36-2 61-368 4-53-14Z" fill="#458e89" stroke="#345b59" stroke-width="3"/>
+    <path d="m918 539 52 7 367-7v59l-367 4-52-14Z" fill="url(#pad)" stroke="#345b59" stroke-width="2.2"/>
+    <path id="mat-top" d="m918 536 42-34h325l53 34-369 7Z" fill="#8ec2ac" stroke="#426f66" stroke-width="2.5"/>
+    <path d="m920 538 50 8 364-7M970 549v49m112-54-1 55m130-58v56" stroke="#64a39a" stroke-width="2" fill="none"/>
+    <path d="m996 542 28-36m120 33-1-33m126 30-25-30" fill="none" stroke="#70a898" stroke-width="1.7" stroke-dasharray="5 4"/>
+    <path d="m932 556 22 4v17l-22-6Zm308-6 66-1v14l-66 1Z" fill="url(#vent)"/>
+    <g fill="none" stroke="#214f55" stroke-width="4"><path d="M1022 562v7q10 5 19 0v-7m77-1v7q10 5 19 0v-7m144 9v5q9 5 17 0v-6"/></g>
+  </g>
+  <ellipse id="run-shadow" cx="147" cy="607" rx="63" ry="5.8" fill="#845646" opacity=".27"/>
+  <ellipse id="mat-shadow" cx="1190" cy="522" rx="70" ry="5" fill="#437c74" opacity="0"/>
+  <g id="dust" fill="#f8d7a6" opacity="0"><ellipse rx="6" ry="2.4"/><ellipse cx="-13" cy="2" rx="4" ry="1.5"/><ellipse cx="-5" cy="-4" rx="2.6" ry="1.5"/></g>
+
+  <!-- All pole stripes share the same curved path and therefore bend with it. -->
+  <g id="pole" fill="none" stroke-linecap="round">
+    <path id="shaft" d="M121 448 508 395" stroke="#334f53" stroke-width="7.4"/>
+    <path id="shaft-enamel" d="" stroke="#fff2cf" stroke-width="4.3"/>
+    <path id="shaft-color" d="" stroke="#db7350" stroke-width="4.3" stroke-dasharray="43 7 8 7 8 1000" stroke-dashoffset="-172"/>
+    <path id="shaft-grip" d="" stroke="#377b76" stroke-width="5.1" stroke-dasharray="47 1000"/>
+  </g>
+  <g id="roo" transform="translate(145 512)" stroke-linecap="round" stroke-linejoin="round">
+    <g id="tail">
+      <path d="M4-7C-11-16-25-8-39 6-58 23-81 38-119 39c-4 0-5 2-1 3 39 7 70-2 93-14C-6 18 8 14 7 2Z" fill="#c47b45" stroke="#543f34" stroke-width="3.2"/>
+      <path d="M-9 7c-21 22-61 38-94 35 32 0 59-13 81-32Z" fill="#df9b59"/>
+    </g>
+    <g id="back-leg"></g>
+    <g id="back-arm"></g>
+    <!-- The narrow chest, long muzzle, big ears and heavy haunch retain the red kangaroo silhouette through the inversion. -->
+    <path d="M-27-3c-2-19 12-34 21-49 6-11 10-22 13-31l24 2c-3 15-5 27-8 41C19-24 28-11 24 1c-3 12-16 21-28 20-13-1-23-10-23-24Z" fill="#d88f4e" stroke="#523e33" stroke-width="3.3"/>
+    <path d="M10-75q10-1 18-3c-1 21-7 37-9 53 0 8 5 19 1 28-4 7-11 11-20 12 13-10 11-23 10-33-2-19 6-38 0-57Z" fill="#f1c58c"/>
+    <path d="M1-67q11 10 25 4l-3 19c-1 8 0 17 3 23C14-11-2-9-21-16l-1-7C-12-34-5-48 1-67Z" fill="#216c67" stroke="#314e46" stroke-width="2.8"/>
+    <path d="M1-65q10 10 23 5M-21-20q22 7 45-5" fill="none" stroke="#f5d385" stroke-width="3.6"/>
+    <path d="m-2-48 22-4-1 21-23 4Z" fill="#fff0c8" stroke="#486052" stroke-width="1.3"/>
+    <path d="m3-42 11-2-7 13" fill="none" stroke="#28635d" stroke-width="3.6"/>
+    <g id="front-leg"></g>
+    <g id="head">
+      <g id="ears">
+        <path d="M15-99c-12-7-24-23-24-43 1-6 3-6 7-1 12 12 21 29 24 41Z" fill="#b97949" stroke="#553f34" stroke-width="3.1"/>
+        <path d="M15-105Q-1-122-5-137q13 13 23 34Z" fill="#7b5946"/>
+        <path d="M19-102c-3-15-2-33 7-49 3-5 6-5 7 1 3 19-1 36-6 48Z" fill="#de9958" stroke="#553f34" stroke-width="3.1"/>
+        <path d="M23-108q-1-19 6-34 2 18-4 34Z" fill="#af7560"/>
+      </g>
+      <path d="M4-85c0-14 8-24 21-25 11-1 19 5 23 13l12 4 12 5q5 3 1 8c-5 6-15 8-25 8l-12 7-7-2-6 5c-9 0-16-8-18-15l-5 1Z" fill="#dc9656" stroke="#543f34" stroke-width="3.4"/>
+      <path d="M31-79q9-6 17-7c9-1 18 0 24 1 0 7-9 11-23 11l-13 7-9-2-5 3q0-9 9-13Z" fill="#f0c591"/>
+      <path d="M64-90q8-1 12 3c1 3-2 7-6 8-4-2-7-6-6-11Z" fill="#363c35"/>
+      <path d="M51-79q7 2 13 0" stroke="#79543e" fill="none" stroke-width="1.7"/>
+      <g transform="translate(39 -95)"><g id="eye"><ellipse rx="4.3" ry="5.3" fill="#3a382f"/><circle cx="1.3" cy="-1.8" r="1.3" fill="#fff4d8"/></g></g>
+      <path d="M32-101q4-3 8-2m-25 17 5-2m-7 6 5-2" fill="none" stroke="#a66843" stroke-width="1.9"/>
+    </g>
+    <g id="front-arm"></g>
+  </g>
+  <!-- The near upright and striped crossbar are in front of the athlete. -->
+  <use href="#standard" transform="translate(927 623)"/>
+  <g stroke-linecap="round" fill="none">
+    <path d="m936 277 111-37" stroke="#374e4b" stroke-width="6.2"/>
+    <path d="m936 276 111-37" stroke="#f4c648" stroke-width="3.8"/>
+    <path d="m936 276 111-37" stroke="#da6449" stroke-width="4.1" stroke-dasharray="11 17"/>
+  </g>
+</svg>
+<button id="motion" type="button" aria-label="暂停动画" title="暂停动画" data-paused="false" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause" d="M6 4h4v16H6zm8 0h4v16h-4z"/><path class="play" d="M7 4v16l13-8z"/></svg>
+</button>
+</main>
+<script>
+(() => {
+  'use strict';
+  const ns = 'http://www.w3.org/2000/svg';
+  const byId = id => document.getElementById(id);
+  const field = byId('field'), roo = byId('roo'), pole = byId('pole');
+  const shaftLayers = ['shaft','shaft-enamel','shaft-color','shaft-grip'].map(byId);
+  const tail = byId('tail'), eye = byId('eye'), ears = byId('ears');
+  const runShadow = byId('run-shadow'), matShadow = byId('mat-shadow'), dust = byId('dust');
+  const matTop = byId('mat-top'), clouds = byId('clouds'), button = byId('motion');
+  const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+  const rad = a => a * Math.PI / 180;
+  const ease = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+  const mix = (a, b, t) => a + (b - a) * t;
+  const point = (x, y) => ({ x, y });
+  const plus = (a, b) => point(a.x + b.x, a.y + b.y);
+  const minus = (a, b) => point(a.x - b.x, a.y - b.y);
+  const lerp = (a, b, t) => point(mix(a.x,b.x,t), mix(a.y,b.y,t));
+  const xy = p => p.x.toFixed(2) + ' ' + p.y.toFixed(2);
+  function rotate(p, angle) {
+    const c = Math.cos(rad(angle)), s = Math.sin(rad(angle));
+    return point(c * p.x - s * p.y, s * p.x + c * p.y);
+  }
+  // Monotone cubic interpolation gives continuous velocities without overshooting a key pose.
+  function sample(keys, t) {
+    if (t <= keys[0][0]) return keys[0].slice(1);
+    const end = keys.length - 1;
+    if (t >= keys[end][0]) return keys[end].slice(1);
+    let i = 0; while (keys[i+1][0] < t) i++;
+    const a = keys[i], b = keys[i+1], dt = b[0]-a[0], u = (t-a[0])/dt;
+    function slope(j, k) {
+      const p = keys[j], prev = keys[j-1], next = keys[j+1];
+      if (!prev) return (next[k]-p[k])/(next[0]-p[0]);
+      if (!next) return (p[k]-prev[k])/(p[0]-prev[0]);
+      const left = (p[k]-prev[k])/(p[0]-prev[0]), right = (next[k]-p[k])/(next[0]-p[0]);
+      return left*right <= 0 ? 0 : 2*left*right/(left+right);
+    }
+    return a.slice(1).map((v,k) => {
+      const j=k+1, u2=u*u, u3=u2*u;
+      return (2*u3-3*u2+1)*v+(u3-2*u2+u)*dt*slope(i,j)
+        +(-2*u3+3*u2)*b[j]+(u3-u2)*dt*slope(i+1,j);
+    });
+  }
+  function path(parent, fill, stroke, width) {
+    const p = document.createElementNS(ns,'path');
+    p.setAttribute('fill',fill); p.setAttribute('stroke',stroke); p.setAttribute('stroke-width',width);
+    parent.append(p); return p;
+  }
+  function makeLeg(id, rear) {
+    const g=byId(id), fur=rear?'#ad7047':'#d68a47', edge=rear?'#684d3d':'#543f34';
+    return { lowerEdge:path(g,'none',edge,11), lower:path(g,'none',rear?'#c49465':'#e3b079',6.7),
+      thigh:path(g,fur,edge,3), accent:path(g,'none',rear?'#c88850':'#edaa65',2),
+      foot:path(g,rear?'#93664c':'#b88154',edge,2.6), toes:path(g,'none',edge,1.4) };
+  }
+  function makeArm(id, rear) {
+    const g=byId(id);
+    return { edge:path(g,'none',rear?'#79553d':'#584135',rear?8:9.5),
+      fur:path(g,'none',rear?'#b47c4b':'#db9c61',rear?4.4:6),
+      paw:path(g,rear?'#876249':'#9a6c4a',rear?'#694b39':'#563f33',1.8) };
+  }
+  const nearLeg=makeLeg('front-leg',false), farLeg=makeLeg('back-leg',true);
+  const nearArm=makeArm('front-arm',false), farArm=makeArm('back-arm',true);
+  function drawLeg(parts, hip, ankle, angle) {
+    const dx=ankle.x-hip.x, dy=ankle.y-hip.y, len=Math.max(1,Math.hypot(dx,dy));
+    const side=clamp(48-len*.21,16,39);
+    const k=point(hip.x+dx*.47+dy/len*side, hip.y+dy*.47-dx/len*side);
+    const shin='M'+xy(k)+' Q'+xy(lerp(k,ankle,.6))+' '+xy(ankle);
+    parts.lowerEdge.setAttribute('d',shin); parts.lower.setAttribute('d',shin);
+    const thigh='M'+xy(plus(hip,point(-19,-7)))+' C'+xy(plus(hip,point(-19,-31)))+' '+xy(plus(hip,point(14,-32)))+' '+xy(plus(hip,point(23,-8)))+' Q'+xy(plus(k,point(12,-4)))+' '+xy(plus(k,point(5,5)))+' Q'+xy(plus(k,point(-2,12)))+' '+xy(plus(k,point(-10,5)))+' Q'+xy(plus(hip,point(-19,20)))+' '+xy(plus(hip,point(-19,-7)))+'Z';
+    parts.thigh.setAttribute('d',thigh);
+    parts.accent.setAttribute('d','M'+xy(plus(hip,point(-12,-10)))+'q1-10 12-13');
+    const footTransform='translate('+xy(ankle)+') rotate('+angle+')';
+    parts.foot.setAttribute('d','M-4-3q3-4 8 0c9 5 26 5 36 4l7 1q3 3-1 5c-14 3-32 3-46 0q-6-1-4-10Z');
+    parts.foot.setAttribute('transform',footTransform);
+    parts.toes.setAttribute('d','m35 4 9-1m-5 3 8-1');
+    parts.toes.setAttribute('transform',footTransform);
+  }
+  function drawArm(parts, shoulder, wrist, open) {
+    const d=minus(wrist,shoulder), len=Math.max(1,Math.hypot(d.x,d.y));
+    const offset=clamp(31-len*.25,5,23);
+    const elbow=point((shoulder.x+wrist.x)*.5 + d.y/len*offset, (shoulder.y+wrist.y)*.5 - d.x/len*offset+5);
+    const arm='M'+xy(shoulder)+' Q'+xy(lerp(shoulder,elbow,.65))+' '+xy(elbow)+' L'+xy(wrist);
+    parts.edge.setAttribute('d',arm); parts.fur.setAttribute('d',arm);
+    parts.paw.setAttribute('d',open?'M-3 2q-2-4 0-7l3-5q2-1 2 1l-1 5 4-6q2-1 2 1l-3 7 4-4q2 0 1 2L4 3Q0 6-3 2Z':'M-5-2q0-4 4-4l6 1 2 3-1 5q-1 2-3 0l-1-3-1 4q-3 2-4-1Z');
+    parts.paw.setAttribute('transform','translate('+xy(wrist)+')');
+  }
+
+  const plant=3.25, release=5.50, cycle=10.5, length=360, box=point(880,607);
+  const startAngle=Math.asin(160/length)*180/Math.PI;
+  const plantX=box.x-Math.sqrt(length*length-160*160)-13;
+  const swing=[
+    [plant,startAngle,360,0,13,-65],[3.52,34,334,-12,15,-68],
+    [3.85,44,299,-42,18,-71],[4.17,55,283,-78,16,-74],
+    [4.45,65,296,-107,14,-76],[4.75,73.5,322,-137,13,-78],
+    [5.04,81,350,-158,14,-81],[5.31,89.5,360,-168,13,-84],
+    [release,95,360,-172,13,-85]
+  ];
+  const releasingHand=minus(box,rotate(point(length,0),95));
+  const releaseHip=minus(releasingHand,rotate(point(13,-85),-172));
+  const flight=[
+    [release,releaseHip.x,releaseHip.y,-172],[5.72,969,141,-161],[5.97,1006,129,-145],
+    [6.22,1042,131,-125],[6.48,1080,154,-105],[6.73,1113,195,-89],
+    [6.98,1143,251,-78],[7.25,1172,322,-76],[7.52,1193,404,-79],
+    [7.83,1212,489,-86],[7.96,1216,501,-88],[8.15,1214,487,-82],
+    [8.39,1208,486,-61],[8.72,1192,490,-20],[9.08,1179,495,-3],[9.36,1176,495,0],[cycle,1176,495,0]
+  ];
+  const stride=.64;
+  const runFoot=[[0,23,-9,0],[.18,8,-8,0],[.38,-12,-20,16],[.5,-23,-35,29],[.64,-32,-57,23],[.8,-17,-59,-12],[1,23,-9,0]];
+  const gaitAt=t=>(((t-plant)/stride+.38)%1+1)%1;
+  function runHip(t) {
+    const p=gaitAt(t), jump=p>.4?Math.sin(Math.PI*(p-.4)/.6)**2:0;
+    return point(mix(145,plantX,t/plant),512-18*jump);
+  }
+  function runningFoot(t, hipY, rear) {
+    const p=(gaitAt(t)+(rear?.065:0))%1, [x,y,a]=sample(runFoot,p);
+    return [x+(rear?-8:0),607+y-hipY+(rear?-2:0),a+(rear?-3:0)];
+  }
+  function footKeys(rear) {
+    const start=runningFoot(plant,512,rear), offset=rear?-10:0;
+    const rows=[[3.5,-27,65,22],[3.8,-35,75,23],[4.1,-17,90,10],[4.4,17,89,-6],
+      [4.8,19,81,-8],[5.1,14,77,-5],[5.5,11,79,-6],[5.82,22,66,-13],
+      [6.15,26,51,-20],[6.50,9,47,-26],[6.85,-9,63,-27],[7.4,6,69,-19],
+      [7.83,10,69,-31],[8.12,16,61,-29],[8.4,17,41,-16],[8.88,-12,21,-3],[cycle,-12,21,-3]];
+    return [[plant,...start],...rows.map(([t,x,y,a])=>[t,x+offset,y+(rear?-5:0),a+(rear?6:0)])];
+  }
+  const nearFoot=footKeys(false), farFoot=footKeys(true);
+  const tailKeys=[[plant,0],[3.65,9],[4.1,16],[4.65,6],[5.2,-13],[5.75,-30],[6.25,-50],[6.85,-70],[7.52,-87],[7.99,-94],[8.4,-57],[8.88,-5],[9.19,8],[cycle,8]];
+  const fallingPole=[[release,95],[5.76,93],[6.01,84],[6.35,65],[6.70,33],[7.02,1.6],[7.13,6],[7.34,1.4],[7.46,2.4],[7.62,1.3],[cycle,1.3]];
+  const freeArm=[[release,13,-85],[5.78,32,-85],[6.19,52,-60],[6.7,45,-35],[7.38,48,-28],[7.9,38,-41],[8.4,30,-39],[9,34,-52],[9.28,49,-84],[9.48,53,-80],[9.69,48,-88],[cycle,48,-88]];
+  const secondArm=[[4.72,22,-112],[5.12,27,-92],[5.5,32,-74],[6.1,40,-45],[6.72,37,-31],[7.86,32,-37],[8.5,22,-41],[9.2,28,-47],[cycle,28,-47]];
+  // Solve the quadratic bow for a fixed arc length as the athlete loads the pole.
+  function bowFor(chord) {
+    if (chord>=length-.005) return 0;
+    let lo=0,hi=length;
+    for(let i=0;i<15;i++) {
+      const bend=(lo+hi)*.5, k=2*bend/chord;
+      const arc=.5*chord*(Math.hypot(1,k)+Math.asinh(k)/k);
+      if(arc<length) lo=bend; else hi=bend;
+    }
+    return (lo+hi)*.5;
+  }
+  function geometry(grip,tip) {
+    const d=minus(tip,grip), chord=Math.hypot(d.x,d.y), bend=bowFor(chord);
+    const control=plus(lerp(grip,tip,.5),point(d.y/chord*bend,-d.x/chord*bend));
+    const tangent=minus(control,grip), speed=Math.hypot(tangent.x,tangent.y);
+    const butt=minus(grip,point(tangent.x/speed*20,tangent.y/speed*20));
+    const u=44/(2*speed);
+    const other=lerp(lerp(grip,control,u),lerp(control,tip,u),u);
+    const line='M'+xy(butt)+' L'+xy(grip)+' Q'+xy(control)+' '+xy(tip);
+    for (const layer of shaftLayers) layer.setAttribute('d',line);
+    return other;
+  }
+  let width=1440,height=760;
+  function resize() {
+    const ratio=field.clientWidth/Math.max(1,field.clientHeight);
+    if(!ratio) return;
+    width=ratio>=1.18?Math.max(1440,ratio*710):Math.max(545,ratio*810);
+    height=width/ratio;
+  }
+  function draw(t, firstPass) {
+    let hip, angle, hand, tip, gripLocal;
+    if(t<plant) {
+      hip=runHip(t); angle=0;
+      gripLocal=point(13,-65); hand=plus(hip,gripLocal);
+      const carried=mix(-17,startAngle,ease((t-.45)/(plant-.45)));
+      tip=plus(hand,rotate(point(length,0),carried));
+    } else if(t<=release) {
+      const [a,r,tilt,gx,gy]=sample(swing,t);
+      angle=tilt; gripLocal=point(gx,gy); tip=box;
+      hand=minus(box,rotate(point(r,0),a));
+      hip=minus(hand,rotate(gripLocal,angle));
+    } else {
+      const [x,y,tilt]=sample(flight,t);
+      hip=point(x,y); angle=tilt;
+      gripLocal=point(...sample(freeArm,t)); tip=box;
+      hand=minus(box,rotate(point(length,0),sample(fallingPole,t)[0]));
+    }
+    const other=geometry(hand,tip);
+    const localOther=rotate(minus(other,hip),-angle);
+    let farWrist=localOther;
+    if(t>4.72) farWrist=lerp(localOther,point(...sample(secondArm,t)),ease((t-4.72)/.22));
+    roo.setAttribute('transform','translate('+xy(hip)+') rotate('+angle+')');
+    const nf=t<plant?runningFoot(t,hip.y,false):sample(nearFoot,t);
+    const ff=t<plant?runningFoot(t,hip.y,true):sample(farFoot,t);
+    drawLeg(farLeg,point(-5,-3),point(ff[0],ff[1]),ff[2]);
+    drawLeg(nearLeg,point(-6,0),point(nf[0],nf[1]),nf[2]);
+    drawArm(farArm,point(16,-53),farWrist,t>4.85&&t<7.84);
+    drawArm(nearArm,point(9,-49),gripLocal,(t>release+.07&&t<7.84)||t>9.12);
+    const wag=t<plant?3*Math.sin(2*Math.PI*(t-plant)/stride):sample(tailKeys,t)[0];
+    tail.setAttribute('transform','rotate('+wag+' -11 3)');
+    const earLag=t<plant?3*Math.sin((t-plant)*2*Math.PI/stride):2.7*Math.sin((t-plant)*4.5);
+    ears.setAttribute('transform','rotate('+earLag+' 20 -104)');
+    const blink=Math.min(...[1.32,7.93,9.62].map(b=>Math.abs(t-b)));
+    eye.setAttribute('transform','scale(1 '+clamp(blink/.086,.09,1)+')');
+    const opacity=Math.min(firstPass?1:ease(t/.25),1-ease((t-10)/.50));
+    roo.setAttribute('opacity',opacity); pole.setAttribute('opacity',opacity);
+    runShadow.setAttribute('cx',hip.x-8);
+    runShadow.setAttribute('rx',Math.max(20,68-(512-hip.y)*.09));
+    runShadow.setAttribute('opacity',.28*opacity*(1-ease((t-plant)/1.2)));
+    matShadow.setAttribute('cx',clamp(hip.x,980,1250));
+    matShadow.setAttribute('rx',44+30*ease((t-6.9)/.9));
+    matShadow.setAttribute('opacity',.32*opacity*ease((t-6.8)/1.05));
+    const dent=9*Math.max(0,1-Math.abs(t-7.96)/.16);
+    matTop.setAttribute('d','M918 536 960 502H1285L1338 536Q1240 '+(540+dent)+' 1160 '+(539+dent)+'L969 543Z');
+    const p=gaitAt(t);
+    dust.setAttribute('transform','translate('+(hip.x-13-47*p)+' '+(604-16*p)+') scale('+(1+p*.4)+')');
+    dust.setAttribute('opacity',t<plant?.58*opacity*(1-ease((p-.13)/.54)):0);
+    clouds.setAttribute('transform','translate('+(7*Math.sin(2*Math.PI*t/cycle))+ ' 0)');
+    const cameraX=width>=1440?(1440-width)/2:clamp(hip.x+65-width*.5,0,1440-width);
+    field.setAttribute('viewBox',[cameraX,365-height*.5,width,height].join(' '));
+  }
+  const preference=matchMedia('(prefers-reduced-motion: reduce)');
+  let paused=preference.matches, elapsed=preference.matches?4.45:0, last=null, frame=0;
+  function tick(now) {
+    if(last!==null) elapsed+=(now-last)/1000;
+    last=now; draw(elapsed%cycle,elapsed<cycle);
+    frame=requestAnimationFrame(tick);
+  }
+  function sync() {
+    cancelAnimationFrame(frame); last=null;
+    const label=paused?'播放动画':'暂停动画';
+    button.dataset.paused=String(paused); button.setAttribute('aria-label',label); button.title=label;
+    if(!paused&&!document.hidden) frame=requestAnimationFrame(tick);
+  }
+  window.addEventListener('resize',()=>{resize();draw(elapsed%cycle,elapsed<cycle);});
+  button.addEventListener('click',()=>{paused=!paused;sync();});
+  preference.addEventListener('change',e=>{paused=e.matches;sync();});
+  document.addEventListener('visibilitychange',sync);
+  resize(); draw(elapsed%cycle,true); button.hidden=false; sync();
+})();
+</script>
+</body>
+</html>
